@@ -44,18 +44,24 @@ const newBlog = (blogData ={})=>{
         }
     })
 
-    // console.log('newBlog blogData...:', blogData)
-    // return {
-    //     id: 3   //表示新建博客， 插入数据表里面的 id
-    // }
 }
 
 // 更新博客
 const updateBlog = (id, blogData={}) =>{
     // id是要更新博客的 id
-    // blogData是一个博客对象， 包含title content 属性
+    // blogData是一个博客对象， 包含更新的内容：title 和 content 
     console.log('update blogData...:',id,blogData)
-    return false
+    const title = blogData.title
+    const content = blogData.content
+
+    const sql = `update blogs set title='${title}',content='${content}' where id=${id}`
+    return exec(sql).then(updateData => {
+        console.log('updateData',updateData)
+        if(updateData.affectedRows >0) {
+            return true
+        }
+        return false
+    })
 }
 
 // 删除博客
