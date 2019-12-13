@@ -14,7 +14,7 @@ const handleBlogRouter = (req, res) =>{
     const path = req.path
 
     // 获取博客列表
-    if(method === 'GET' && path ==='/api/blog/list'){
+    if(method === 'GET' && path ==='/api/blog/list'){ 
 
         const author = req.query.author || ''
         const keyword = req.query.keyword || ''
@@ -69,13 +69,16 @@ const handleBlogRouter = (req, res) =>{
     }
     // 删除一篇博客
     if(method === 'POST' && path ==='/api/blog/del'){
-        const result = deleteBlog(id)
 
-        if(result){
-            return new SuccessModel()
-        }else{
-            return new ErrorModel('删除博客失败')
-        }
+        const author= 'zhangsan'  //假数据，待开发登录时再改成真实数据
+        const result = deleteBlog(id,author)
+        return result.then(val => {
+            if(val){
+                return new SuccessModel()
+            }else{
+                return new ErrorModel('删除博客失败')
+            }
+        })
     }
 }
 

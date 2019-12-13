@@ -13,7 +13,7 @@ const getList = (author, keyword) => {
     }
     sql+= `order by createtime desc`
 
-    console.log('sql:'+sql)
+    console.log('sql:'+sql) 
     // 返回promise
     return exec(sql)
 
@@ -65,11 +65,20 @@ const updateBlog = (id, blogData={}) =>{
 }
 
 // 删除博客
-const deleteBlog = (id) => {
+const deleteBlog = (id, author) => {
     // id是要删除博客的 id
-    console.log('delete blogData...:',id)
+    // 软删除（实际是更新 状态）
+    // 这里是直接删除 
+    // id author 保证删除的是本作者对应id的数据
+    const sql = `delete from blogs where id=${id} and author=${author}`
 
-    return true
+    return exec(sql).then(deleteData => {
+        console.log('deleteData',deleteData)
+        if(deleteData.affectedRows >0){
+            return true
+        }
+        return false
+    })
 }
 
 module.exports = {
