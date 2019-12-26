@@ -1,15 +1,17 @@
 // 引入查询数据库 函数
-const{exec} = require('../db/mysql')
+const{exec, escape} = require('../db/mysql')
 
 // 博客列表 查询取数据
 const getList = (author, keyword) => {
     // 拼接sql语句 查询数据库里想要获取的数据（格式要正确）
     let sql = `select * from blogs where 1=1 `
     if(author) {
-        sql+= `and author='${author}' `
+        author= escape(author)
+        sql+= `and author=${author} `
     }
     if(keyword) {
-        sql+= `and title like '%${keyword}%' `
+        keyword = escape(keyword)
+        sql+= `and title like %${keyword}% `
     }
     sql+= `order by createtime desc`
 
@@ -21,7 +23,8 @@ const getList = (author, keyword) => {
 
 // 博客详情 查询取数据
 const getDetail = (id) =>{
-   let sql = `select * from blogs where id='${id}'`
+    id = escape(id)
+   let sql = `select * from blogs where id=${id}`
 
    return exec(sql).then(rows => {
        return rows[0]
@@ -36,7 +39,11 @@ const newBlog = (blogData ={})=>{
     const author = blogData.author
     const createtime = Date.now()
     console.log(title)
-    const sql = `insert into blogs (title, content, createtime, author) values ('${title}','${content}',${createtime},'${author}');`
+
+    title = escape(title)
+    content = escape(content)
+    author = escape(author)
+    const sql = `insert into blogs (title, content, createtime, author) values (${title},${content},${createtime},${author});`
     return exec(sql).then(insertData => {
         // console.log('insertData:',insertData)
         return{
@@ -53,8 +60,11 @@ const updateBlog = (id, blogData={}) =>{
     console.log('update blogData...:',id,blogData)
     const title = blogData.title
     const content = blogData.content
-
-    const sql = `update blogs set title='${title}',content='${content}' where id=${id}`
+    id= escape(id)
+    title = escape(title)
+    content = escape(content)
+    
+    const sql = `update blogs set title=${title},content=${content} where id=${id}`
     return exec(sql).then(updateData => {
         console.log('updateData',updateData)
         if(updateData.affectedRows >0) {
@@ -70,6 +80,9 @@ const deleteBlog = (id, author) => {
     // 软删除（实际是更新 状态）
     // 这里是直接删除 
     // id author 保证删除的是本作者对应id的数据
+    id= escape(id)
+    author = escape(author)
+
     const sql = `delete from blogs where id=${id} and author=${author}`
 
     return exec(sql).then(deleteData => {

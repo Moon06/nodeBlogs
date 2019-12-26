@@ -1,5 +1,6 @@
 const querystring = require('querystring')
-const { get, set} =require('./src/db/redis')
+const { get, set} =require('./src/db/redis') //存储数据到redis
+const { access } = require('./src/uils/log')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
@@ -45,6 +46,9 @@ const getPostData = (req) => {
 }
 
 const serverHandle = (req, res) => {
+    // 记录 access log
+    access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${Date.now()}`)
+
     //设置返回格式  JSON
     res.setHeader('Content-type', 'application/json')
 
@@ -118,7 +122,7 @@ const serverHandle = (req, res) => {
         const blogResult = handleBlogRouter(req, res)
         if (blogResult) {
             blogResult.then(blogData => {
-                console.log(blogData)
+                // console.log(blogData)
                 if(needSetCookie){
                     res.setHeader('Set-Cookie', `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
                 }
