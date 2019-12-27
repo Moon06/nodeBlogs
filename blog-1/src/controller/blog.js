@@ -1,5 +1,6 @@
 // 引入查询数据库 函数
 const{exec, escape} = require('../db/mysql')
+const xss = require('xss')
 
 // 博客列表 查询取数据
 const getList = (author, keyword) => {
@@ -34,8 +35,8 @@ const getDetail = (id) =>{
 // 新建博客 插入数据
 const newBlog = (blogData ={})=>{
     // blogData是一个博客对象， 包含title content 属性
-    const title = blogData.title
-    const content = blogData.content
+    const title = xss(blogData.title)
+    const content = xss(blogData.content)
     const author = blogData.author
     const createtime = Date.now()
     console.log(title)
@@ -58,8 +59,8 @@ const updateBlog = (id, blogData={}) =>{
     // id是要更新博客的 id
     // blogData是一个博客对象， 包含更新的内容：title 和 content 
     console.log('update blogData...:',id,blogData)
-    const title = blogData.title
-    const content = blogData.content
+    const title = xss(blogData.title)
+    const content = xss(blogData.content)
     id= escape(id)
     title = escape(title)
     content = escape(content)

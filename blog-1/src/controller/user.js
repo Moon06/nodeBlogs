@@ -1,8 +1,16 @@
-const{exec, escape} = require('../db/mysql')
+const{exec, escape} = require('../db/mysql') //转换sql注入
+const{genPassword} = require('../uils/cryp') //转换xss
 
 const login = (username, password)=>{
+
+    // 生成加密密码
+    password = genPassword(password)
+
+    //转换sql注入  需在生成加密密码后运行.. sql语句中的单引号才能去掉.不然报错 
     username = escape(username)
-    password = escape(password)
+    password = escape(password) //
+
+    // console.log('password',password)
 
     const sql = `
         select username, realname from users where username=${username} and password = ${password}
