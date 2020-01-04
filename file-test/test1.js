@@ -31,4 +31,5 @@ fs.writeFile(fileName, content, opt, (err) => {
 // 判断文件是否存在
 fs.exists(fileName, (exist) => {
     console.log('exist', exist)
+    return exist
 })

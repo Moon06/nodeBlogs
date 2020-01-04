@@ -7,6 +7,7 @@ const {
         deleteBlog
     } = require('../controller/blog')
 const {SuccessModel,ErrorModel} = require('../model/resModel')
+const {loginCheck} = require('.')
 
 
 // 统一登录验证函数
@@ -74,7 +75,7 @@ const handleBlogRouter = (req, res) =>{
             return loginCheckResult
         }
 
-        req.body.author= req.session.username  
+        req.body.author= req.session.username
         const result = newBlog(req.body)
         return result.then(data => {
             return new SuccessModel(data)
